@@ -1,20 +1,10 @@
-﻿/* ============================================================
-   PARA VOCE -- SPA 3 ESTADOS  |  script.js
-   Maquina de estados: Estado 1 → 2 → 3
-   ============================================================ */
-
 'use strict';
 
-/* ─────────────────────────────────────────────────────────────
-   ESTADO GLOBAL
-   ───────────────────────────────────────────────────────────── */
 let currentState = 1;
 let currentSlide = 0;
 const TOTAL_SLIDES = 4;
+let wasBgMusicPlaying = false;
 
-/* ─────────────────────────────────────────────────────────────
-   REFERÊNCIAS DOM
-   ───────────────────────────────────────────────────────────── */
 const states = {
   1: document.getElementById('state-1'),
   2: document.getElementById('state-2'),
@@ -22,28 +12,26 @@ const states = {
 };
 
 const envelopeScene = document.getElementById('envelope-scene');
-const envWrap       = document.getElementById('env-wrap');
-const envFlap       = document.getElementById('env-flap');
+const envWrap = document.getElementById('env-wrap');
+const envFlap = document.getElementById('env-flap');
 
 const slidesContainer = document.getElementById('slides-container');
-const progressDots    = document.querySelectorAll('.progress-dot');
+const progressDots = document.querySelectorAll('.progress-dot');
 
-const bgMusic      = document.getElementById('bgMusic');
-const musicToggle  = document.getElementById('music-toggle');
+const bgMusic = document.getElementById('bgMusic');
+const musicToggle = document.getElementById('music-toggle');
 
 const canvas = document.getElementById('particle-canvas');
-const ctx    = canvas.getContext('2d');
+const ctx = canvas.getContext('2d');
 
-/* ─────────────────────────────────────────────────────────────
-   ESTADO 1 — ABERTURA DO ENVELOPE
-   ───────────────────────────────────────────────────────────── */
 function openEnvelope() {
   if (currentState !== 1) return;
 
-  // Adiciona classe para a animação CSS do envelope
-  envWrap.classList.add('opening');
+  // Inicia a música principal no momento do clique no envelope
+  tryPlayMusic();
+  if (musicToggle) musicToggle.removeAttribute('hidden');
 
-  // Após a animação, transiciona para Estado 2
+  envWrap.classList.add('opening');
   setTimeout(() => {
     goToState(2);
   }, 950);
@@ -57,16 +45,11 @@ envelopeScene.addEventListener('keydown', e => {
   }
 });
 
-/* ─────────────────────────────────────────────────────────────
-   ESTADO 2 — SLIDESHOW DE MANGÁ
-   ───────────────────────────────────────────────────────────── */
 function showSlide(index) {
   const slides = slidesContainer.querySelectorAll('.slide');
-
   slides.forEach((slide, i) => {
     if (i === index) {
       slide.removeAttribute('hidden');
-      // Dispara reflow para a animação funcionar ao ser exibido
       void slide.offsetWidth;
       slide.style.animation = 'none';
       void slide.offsetWidth;
@@ -76,7 +59,6 @@ function showSlide(index) {
     }
   });
 
-  // Atualiza indicador de progresso
   progressDots.forEach((dot, i) => {
     dot.classList.toggle('active', i === index);
   });
@@ -84,74 +66,58 @@ function showSlide(index) {
   currentSlide = index;
 }
 
-// Delegação de evento nos botões de avanço
 slidesContainer.addEventListener('click', e => {
   const btn = e.target.closest('.btn-advance');
   if (!btn) return;
 
   const next = btn.dataset.next;
-
   if (next === 'final') {
-    // Último slide → vai para Estado 3
     goToState(3);
   } else {
     showSlide(parseInt(next, 10));
-    // Rola suave para o topo do estado
     states[2].scrollTo({ top: 0, behavior: 'smooth' });
   }
 });
 
-/* ─────────────────────────────────────────────────────────────
-   ESTADO 3 — DESTINO FINAL
-   ───────────────────────────────────────────────────────────── */
 function initState3() {
-  // Torna os mini envelopes visíveis
   document.querySelectorAll('.mini-env').forEach(env => {
     env.classList.add('visible');
   });
 
-  // Botão de música
-  musicToggle.removeAttribute('hidden');
-
-  // Tenta tocar a música principal
+  if (musicToggle) musicToggle.removeAttribute('hidden');
   tryPlayMusic();
 }
 
 function tryPlayMusic() {
   if (!bgMusic || !bgMusic.src || bgMusic.src.endsWith('/')) return;
-  bgMusic.play().then(() => {
+  if (!bgMusic.paused) return;
+  bgMusic.play().catch(() => { });
+}
+
+if (bgMusic && musicToggle) {
+  bgMusic.addEventListener('play', () => {
     musicToggle.setAttribute('aria-pressed', 'true');
     musicToggle.classList.remove('paused');
     musicToggle.querySelector('.music-icon').textContent = '♪';
-  }).catch(() => {
-    // Autoplay bloqueado — o usuário precisará tocar manualmente
-    musicToggle.setAttribute('aria-pressed', 'false');
-    musicToggle.classList.add('paused');
   });
-}
 
-// Play / Pause da música principal
-musicToggle.addEventListener('click', () => {
-  if (bgMusic.paused) {
-    bgMusic.play().then(() => {
-      musicToggle.setAttribute('aria-pressed', 'true');
-      musicToggle.classList.remove('paused');
-      musicToggle.querySelector('.music-icon').textContent = '♪';
-    });
-  } else {
-    bgMusic.pause();
+  bgMusic.addEventListener('pause', () => {
     musicToggle.setAttribute('aria-pressed', 'false');
     musicToggle.classList.add('paused');
     musicToggle.querySelector('.music-icon').textContent = '▐▐';
-  }
-});
+  });
 
-/* ─────────────────────────────────────────────────────────────
-   MODAIS DAS CARTINHAS FLUTUANTES
-   ───────────────────────────────────────────────────────────── */
+  musicToggle.addEventListener('click', () => {
+    if (bgMusic.paused) {
+      bgMusic.play().catch(() => { });
+    } else {
+      bgMusic.pause();
+    }
+  });
+}
+
 let activeModal = null;
 
-// Abrir modal
 document.querySelectorAll('.mini-env').forEach(btn => {
   btn.addEventListener('click', () => {
     const modalId = btn.dataset.modal;
@@ -161,8 +127,7 @@ document.querySelectorAll('.mini-env').forEach(btn => {
 });
 
 function openModal(modalId) {
-  // Fecha qualquer modal aberto
-  if (activeModal) closeModal(activeModal, false);
+  if (activeModal) closeModal(activeModal);
 
   const modal = document.getElementById(modalId);
   if (!modal) return;
@@ -171,109 +136,68 @@ function openModal(modalId) {
   document.body.style.overflow = 'hidden';
   activeModal = modal;
 
-  // Foca o botão de fechar para acessibilidade
+  // Pausa a música principal para dar lugar à música da carta
+  if (bgMusic && !bgMusic.paused) {
+    bgMusic.pause();
+    wasBgMusicPlaying = true;
+  }
+
+  const audio = modal.querySelector('.carta-audio');
+  if (audio) {
+    audio.currentTime = 0;
+    audio.play().catch(() => { });
+  }
+
   const closeBtn = modal.querySelector('.modal-close');
   if (closeBtn) closeBtn.focus();
 
-  // Fecha ao clicar no overlay
   const overlay = modal.querySelector('.modal-overlay');
-  overlay.addEventListener('click', () => closeModal(modal, true), { once: true });
+  overlay.addEventListener('click', () => closeModal(modal), { once: true });
 }
 
-function closeModal(modal, pauseAudio) {
+function closeModal(modal) {
   if (!modal) return;
-  if (pauseAudio !== false) {
-    const audio = modal.querySelector('.carta-audio');
-    if (audio) {
-      audio.pause();
-      audio.currentTime = 0;
-      const btn = modal.querySelector('.btn-audio-play');
-      if (btn) {
-        btn.classList.remove('playing');
-        btn.querySelector('.audio-play-icon').textContent = '▶';
-        btn.querySelector('.audio-play-label').textContent = 'Ouvir música';
-      }
-    }
+  const audio = modal.querySelector('.carta-audio');
+  if (audio) {
+    audio.pause();
+    audio.currentTime = 0;
   }
+
+  // Quando sair da carta, a música principal volta
+  if (wasBgMusicPlaying && bgMusic) {
+    bgMusic.play().catch(() => { });
+    wasBgMusicPlaying = false;
+  }
+
   modal.setAttribute('hidden', '');
   document.body.style.overflow = '';
   activeModal = null;
 }
 
-// Fechar ao clicar no botão ✕
 document.querySelectorAll('.modal-close').forEach(btn => {
   btn.addEventListener('click', () => {
     const modal = btn.closest('.modal');
-    closeModal(modal, true);
+    closeModal(modal);
   });
 });
 
-// Fechar com tecla Esc
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape' && activeModal) {
-    closeModal(activeModal, true);
+    closeModal(activeModal);
   }
 });
 
-// Players de áudio das cartas
-document.querySelectorAll('.btn-audio-play').forEach(btn => {
-  const modal = btn.closest('.modal');
-  const audio = modal.querySelector('.carta-audio');
-  if (!audio) return;
-
-  btn.addEventListener('click', () => {
-    if (audio.paused) {
-      // Pausa qualquer outro áudio de carta tocando
-      document.querySelectorAll('.carta-audio').forEach(a => {
-        if (a !== audio && !a.paused) {
-          a.pause();
-          a.currentTime = 0;
-          const otherModal = a.closest('.modal');
-          if (otherModal) {
-            const otherBtn = otherModal.querySelector('.btn-audio-play');
-            if (otherBtn) {
-              otherBtn.classList.remove('playing');
-              otherBtn.querySelector('.audio-play-icon').textContent = '▶';
-              otherBtn.querySelector('.audio-play-label').textContent = 'Ouvir música';
-            }
-          }
-        }
-      });
-      audio.play().then(() => {
-        btn.classList.add('playing');
-        btn.querySelector('.audio-play-icon').textContent = '■';
-        btn.querySelector('.audio-play-label').textContent = 'Pausar';
-      }).catch(() => {/* audio nao disponivel */});
-    } else {
-      audio.pause();
-      btn.classList.remove('playing');
-      btn.querySelector('.audio-play-icon').textContent = '▶';
-      btn.querySelector('.audio-play-label').textContent = 'Ouvir música';
-    }
-  });
-
-  // Ao terminar a música da carta, reseta o botão
-  audio.addEventListener('ended', () => {
-    btn.classList.remove('playing');
-    btn.querySelector('.audio-play-icon').textContent = '▶';
-    btn.querySelector('.audio-play-label').textContent = 'Ouvir música';
-  });
-});
-
-/* ─────────────────────────────────────────────────────────────
-   MÁQUINA DE ESTADOS — TRANSIÇÃO ENTRE ESTADOS
-   ───────────────────────────────────────────────────────────── */
 function goToState(next) {
   if (next === currentState) return;
 
-  const from = states[currentState];
-  const to   = states[next];
+  if (activeModal) closeModal(activeModal);
 
-  // Oculta o estado atual
+  const from = states[currentState];
+  const to = states[next];
+
   from.classList.remove('state--active');
   from.setAttribute('hidden', '');
 
-  // Mostra o próximo estado com animação
   to.removeAttribute('hidden');
   to.classList.add('state--active');
   requestAnimationFrame(() => {
@@ -281,10 +205,8 @@ function goToState(next) {
     to.addEventListener('animationend', () => to.classList.remove('fade-enter'), { once: true });
   });
 
-  // Rola para o topo da página
   window.scrollTo({ top: 0, behavior: 'instant' });
 
-  // Configurações específicas de cada estado
   if (next === 2) {
     showSlide(0);
     updateParticleMode('dark');
@@ -301,13 +223,10 @@ function goToState(next) {
   document.body.dataset.state = next;
 }
 
-/* ─────────────────────────────────────────────────────────────
-   CANVAS — PARTÍCULAS FLUTUANTES (corações e pétalas)
-   ───────────────────────────────────────────────────────────── */
-let particleMode = 'light'; // 'light' | 'dark'
+let particleMode = 'light';
 
 function resizeCanvas() {
-  canvas.width  = window.innerWidth;
+  canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
 resizeCanvas();
@@ -318,20 +237,20 @@ class Particle {
     this.init(randomY);
   }
   init(randomY) {
-    this.x     = Math.random() * canvas.width;
-    this.y     = randomY ? Math.random() * canvas.height : canvas.height + 16;
-    this.size  = 6 + Math.random() * 10;
-    this.vx    = (Math.random() - 0.5) * 0.45;
-    this.vy    = -(0.3 + Math.random() * 0.6);
+    this.x = Math.random() * canvas.width;
+    this.y = randomY ? Math.random() * canvas.height : canvas.height + 16;
+    this.size = 6 + Math.random() * 10;
+    this.vx = (Math.random() - 0.5) * 0.45;
+    this.vy = -(0.3 + Math.random() * 0.6);
     this.alpha = 0.07 + Math.random() * 0.14;
-    this.rot   = Math.random() * Math.PI * 2;
-    this.rspd  = (Math.random() - 0.5) * 0.016;
-    this.type  = Math.random() < 0.5 ? 'heart' : 'petal';
+    this.rot = Math.random() * Math.PI * 2;
+    this.rspd = (Math.random() - 0.5) * 0.016;
+    this.type = Math.random() < 0.5 ? 'heart' : 'petal';
   }
   update() {
-    this.x    += this.vx;
-    this.y    += this.vy;
-    this.rot  += this.rspd;
+    this.x += this.vx;
+    this.y += this.vy;
+    this.rot += this.rspd;
     this.alpha -= 0.0003;
     if (this.y < -20 || this.alpha <= 0) this.init(false);
   }
@@ -348,10 +267,10 @@ class Particle {
         : 'rgba(217,139,139,0.9)';
       ctx.beginPath();
       ctx.moveTo(0, r * 0.3);
-      ctx.bezierCurveTo(0, -r*0.4, -r*1.1, -r*0.4, -r*1.1, r*0.2);
-      ctx.bezierCurveTo(-r*1.1, r*0.8, 0, r*1.4, 0, r*1.4);
-      ctx.bezierCurveTo(0, r*1.4, r*1.1, r*0.8, r*1.1, r*0.2);
-      ctx.bezierCurveTo(r*1.1, -r*0.4, 0, -r*0.4, 0, r*0.3);
+      ctx.bezierCurveTo(0, -r * 0.4, -r * 1.1, -r * 0.4, -r * 1.1, r * 0.2);
+      ctx.bezierCurveTo(-r * 1.1, r * 0.8, 0, r * 1.4, 0, r * 1.4);
+      ctx.bezierCurveTo(0, r * 1.4, r * 1.1, r * 0.8, r * 1.1, r * 0.2);
+      ctx.bezierCurveTo(r * 1.1, -r * 0.4, 0, -r * 0.4, 0, r * 0.3);
       ctx.closePath();
     } else {
       ctx.fillStyle = particleMode === 'dark'
@@ -376,10 +295,7 @@ const particles = Array.from({ length: 28 }, (_, i) => new Particle(true));
   requestAnimationFrame(animate);
 })();
 
-/* ─────────────────────────────────────────────────────────────
-   CLICK HEARTS (toque em qualquer lugar)
-   ───────────────────────────────────────────────────────────── */
-const HEARTS = ['🖤','❤️','🌸','💗','✨','🌷'];
+const HEARTS = ['🖤', '❤️', '🌸', '💗', '✨', '🌷'];
 
 function spawnHeart(x, y) {
   const el = document.createElement('span');
@@ -400,7 +316,6 @@ function spawnHeart(x, y) {
 }
 
 document.addEventListener('click', e => {
-  // Nao spawn dentro de modais ou botoes principais
   if (e.target.closest('.modal-box') && !e.target.closest('.modal-overlay')) return;
   spawnHeart(e.clientX, e.clientY);
 });
@@ -410,7 +325,6 @@ document.addEventListener('touchstart', e => {
   spawnHeart(t.clientX, t.clientY);
 }, { passive: true });
 
-// Injeta o keyframe via JS (compatibilidade)
 const style = document.createElement('style');
 style.textContent = `
   @keyframes clickHeartAnim {

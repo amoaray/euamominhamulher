@@ -1,13 +1,6 @@
-﻿/* ============================================================
-   PARA VOCE -- SPA 3 ESTADOS  |  style.css
-   Mobile-First | Manga + Floral Romantic Theme
-   ============================================================ */
-
-/* ── RESET & BASE ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  /* Estado 1 e 3 — Paleta Floral */
   --cream:        #FAF7F2;
   --cream-dark:   #F0E8DC;
   --blush:        #D98B8B;
@@ -17,18 +10,15 @@
   --ink:          #2C1A1A;
   --ink-soft:     rgba(44,26,26,0.6);
 
-  /* Estado 2 — Paleta Mangá */
   --manga-bg:     #121212;
   --manga-card:   #1E1E1E;
   --manga-border: rgba(255,255,255,0.08);
   --manga-text:   #F0F0F0;
   --manga-muted:  rgba(240,240,240,0.45);
 
-  /* Tipografia */
   --serif:   'Playfair Display', Georgia, serif;
   --sans:    'Quicksand', system-ui, sans-serif;
 
-  /* Misc */
   --radius:  16px;
   --radius-lg: 28px;
   --trans:   0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -45,19 +35,44 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* ── CANVAS ── */
+.bg-wallpaper {
+  position: fixed;
+  inset: -30px;
+  background: url('img/wallpaper.jpg') center center / cover no-repeat;
+  filter: blur(12px) saturate(1.1);
+  opacity: 0.22;
+  transform: scale(1.06);
+  pointer-events: none;
+  z-index: 0;
+  display: none;
+}
+
+body[data-state="1"] .bg-wallpaper,
+body[data-state="3"] .bg-wallpaper {
+  display: block;
+}
+
+body[data-state="1"],
+body[data-state="3"] {
+  background: radial-gradient(circle at 50% 25%, #fbeff2 0%, #f6d8df 55%, #faeef1 100%);
+  background-attachment: fixed;
+}
+
+body[data-state="2"] {
+  background: var(--manga-bg);
+}
+
 #particle-canvas {
   position: fixed;
   inset: 0;
   width: 100%; height: 100%;
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
 }
 
-/* ── ESTADOS (controle de visibilidade) ── */
 .state {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   min-height: 100dvh;
   width: 100%;
   display: flex;
@@ -69,23 +84,20 @@ html, body {
 .state[hidden] { display: none; }
 .state--active  { display: flex; }
 
-/* Fade-in ao entrar */
 .state.fade-enter {
   animation: stateFadeIn 0.65s ease forwards;
 }
+
 @keyframes stateFadeIn {
   from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ════════════════════════════════════════════
-   DECORAÇÃO FLORAL (usada no Estado 1 e 3)
-   ════════════════════════════════════════════ */
 .floral-bg {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  z-index: 0;
+  z-index: 1;
   overflow: hidden;
 }
 
@@ -97,7 +109,6 @@ html, body {
   user-select: none;
 }
 
-/* Posições de cada flor */
 .f1 { --dur:9s;  --del:0s;    top:4%;   left:2%;  font-size:2.5rem; }
 .f2 { --dur:11s; --del:1.5s;  top:8%;   right:4%; font-size:1.8rem; }
 .f3 { --dur:8s;  --del:0.8s;  bottom:12%; left:5%;  font-size:2.2rem; }
@@ -115,11 +126,8 @@ html, body {
   100% { opacity:0;    transform: translateY(0)     rotate(0deg)  scale(0.85); }
 }
 
-/* ════════════════════════════════════════════
-   ESTADO 1 — A CARTA INICIAL
-   ════════════════════════════════════════════ */
 #state-1 {
-  background: var(--cream);
+  background: transparent;
   justify-content: center;
   padding: 2rem 1.5rem;
 }
@@ -136,29 +144,29 @@ html, body {
 .s1-subtitle {
   font-family: var(--serif);
   font-style: italic;
-  font-size: 1rem;
-  color: var(--ink-soft);
+  font-size: 1.05rem;
+  color: var(--ink);
   text-align: center;
   letter-spacing: 0.04em;
-  min-height: 1.5em; /* reserva espaço para texto */
+  text-shadow: 0 1px 6px rgba(255, 255, 255, 0.95), 0 2px 12px rgba(255, 255, 255, 0.85);
 }
 
 .s1-hint {
   font-family: var(--sans);
   font-size: 0.75rem;
   font-weight: 500;
-  color: var(--ink-soft);
+  color: var(--ink);
   letter-spacing: 0.12em;
   text-transform: lowercase;
+  text-shadow: 0 1px 4px rgba(255, 255, 255, 0.9);
   animation: hintPulse 2.4s ease-in-out infinite;
 }
 
 @keyframes hintPulse {
-  0%, 100% { opacity: 0.35; }
-  50%       { opacity: 0.75; }
+  0%, 100% { opacity: 0.45; }
+  50%       { opacity: 0.9; }
 }
 
-/* ── ENVELOPE ── */
 .envelope-scene {
   position: relative;
   width: min(280px, 88vw);
@@ -177,7 +185,7 @@ html, body {
   position: absolute;
   bottom: -14px; left: 8%;
   width: 84%; height: 22px;
-  background: radial-gradient(ellipse, rgba(0,0,0,0.18) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(0,0,0,0.22) 0%, transparent 70%);
   border-radius: 50%;
   transition: var(--trans);
 }
@@ -198,7 +206,6 @@ html, body {
   transform: translateY(-5px) rotate(-1deg);
 }
 
-/* Partes do envelope */
 .env-back {
   position: absolute; inset: 0;
   background: linear-gradient(145deg, #f3dede 0%, #e8c5c5 100%);
@@ -207,7 +214,6 @@ html, body {
   box-shadow: var(--shadow);
 }
 
-/* Aba superior (flip up na abertura) */
 .env-flap {
   position: absolute;
   top: 0; left: 0; right: 0;
@@ -224,7 +230,6 @@ html, body {
   transform: rotateX(-180deg);
 }
 
-/* Abas laterais */
 .env-side {
   position: absolute;
   bottom: 0;
@@ -232,18 +237,19 @@ html, body {
   width: 52%;
   z-index: 1;
 }
+
 .env-side--left {
   left: 0;
   background: linear-gradient(to right, #e0b8b8 0%, #ecc8c8 100%);
   clip-path: polygon(0 0, 100% 50%, 0 100%);
 }
+
 .env-side--right {
   right: 0;
   background: linear-gradient(to left, #e0b8b8 0%, #ecc8c8 100%);
   clip-path: polygon(100% 0, 0 50%, 100% 100%);
 }
 
-/* Frente do envelope (inferior) */
 .env-front {
   position: absolute;
   bottom: 0; left: 0; right: 0;
@@ -254,12 +260,11 @@ html, body {
   z-index: 2;
 }
 
-/* Papel emergindo */
 .env-paper {
   position: absolute;
   left: 18%; right: 18%;
   top: 10%; bottom: 28%;
-  background: #fffdf8;
+  background: rgba(255, 253, 248, 0.96);
   border-radius: 6px 6px 2px 2px;
   border: 1px solid rgba(0,0,0,0.06);
   display: flex; align-items: center; justify-content: center;
@@ -275,7 +280,6 @@ html, body {
   opacity: 1;
 }
 
-/* Selo */
 .env-seal {
   position: absolute;
   top: 50%; left: 50%;
@@ -296,7 +300,6 @@ html, body {
   opacity: 0;
 }
 
-/* Florzinha decorativa */
 .env-flower {
   position: absolute;
   top: -14px; right: -10px;
@@ -311,7 +314,6 @@ html, body {
   50%       { transform: rotate(10deg); }
 }
 
-/* Botão "Abrir" */
 .btn-open-env {
   position: absolute;
   bottom: -18px; left: 50%;
@@ -330,7 +332,7 @@ html, body {
   white-space: nowrap;
   transition: var(--trans);
   backdrop-filter: blur(4px);
-  pointer-events: none; /* o clique e gerenciado pelo .envelope-scene */
+  pointer-events: none;
 }
 
 .envelope-scene:hover .btn-open-env {
@@ -339,9 +341,6 @@ html, body {
   box-shadow: 0 4px 18px rgba(217,139,139,0.4);
 }
 
-/* ════════════════════════════════════════════
-   ESTADO 2 — A JORNADA EM MANGA
-   ════════════════════════════════════════════ */
 #state-2 {
   background: var(--manga-bg);
   padding: 0 0 3rem;
@@ -349,7 +348,6 @@ html, body {
   justify-content: flex-start;
 }
 
-/* Indicador de progresso */
 .slide-progress {
   display: flex;
   gap: 6px;
@@ -370,19 +368,18 @@ html, body {
   border: 1.5px solid transparent;
   cursor: default;
 }
+
 .progress-dot.active {
   background: rgba(255,255,255,0.9);
   transform: scale(1.35);
   border-color: rgba(255,255,255,0.4);
 }
 
-/* Slides container */
 .slides-container {
   width: 100%;
   flex: 1;
 }
 
-/* Cada slide */
 .slide {
   display: flex;
   flex-direction: column;
@@ -397,12 +394,10 @@ html, body {
   to   { opacity: 1; transform: translateX(0); }
 }
 
-/* Moldura da imagem */
 .slide-image-frame {
   position: relative;
   width: 100%;
   background: #0a0a0a;
-  /* Proporção 4:3 reservada para a imagem */
 }
 
 .slide-chapter {
@@ -426,11 +421,9 @@ html, body {
   object-fit: contain;
   max-height: 60dvh;
   filter: grayscale(100%) contrast(1.08);
-  /* Sutil moldura de quadrinho de manga */
   border-bottom: 3px solid rgba(255,255,255,0.06);
 }
 
-/* Conteúdo textual abaixo da imagem */
 .slide-content {
   padding: 1.5rem 1.25rem 1rem;
   display: flex;
@@ -448,12 +441,10 @@ html, body {
   text-align: center;
   max-width: 400px;
   width: 100%;
-  min-height: 3em; /* Reserva de espaço visual */
   position: relative;
   padding: 0 0.25rem;
 }
 
-/* Linha decorativa acima do texto */
 .story-text::before {
   content: '';
   display: block;
@@ -463,7 +454,6 @@ html, body {
   border-radius: 2px;
 }
 
-/* Botão avançar */
 .btn-advance {
   font-family: var(--sans);
   font-size: 0.95rem;
@@ -501,11 +491,8 @@ html, body {
   border-color: rgba(217,139,139,0.8);
 }
 
-/* ════════════════════════════════════════════
-   ESTADO 3 — O DESTINO FINAL
-   ════════════════════════════════════════════ */
 #state-3 {
-  background: var(--cream);
+  background: transparent;
   padding: 2rem 1.25rem 5rem;
   color: var(--ink);
 }
@@ -526,9 +513,10 @@ html, body {
 
 .s3-ornament {
   font-size: 1rem;
-  color: var(--blush);
+  color: var(--blush-dark);
   letter-spacing: 0.3em;
   margin-top: 0.5rem;
+  text-shadow: 0 1px 6px rgba(255,255,255,0.9);
 }
 
 .s3-title {
@@ -538,28 +526,27 @@ html, body {
   color: var(--ink);
   text-align: center;
   line-height: 1.25;
-  min-height: 1.5em;
+  text-shadow: 0 2px 12px rgba(255, 255, 255, 0.95), 0 1px 4px rgba(255, 255, 255, 0.8);
 }
 
-/* Card principal da declaração */
 .main-letter-card {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: var(--radius-lg);
   padding: 2rem 1.5rem 1.75rem;
   width: 100%;
-  box-shadow: 0 4px 32px rgba(217,139,139,0.12),
-              0 1px 0 rgba(255,255,255,0.8) inset;
-  border: 1px solid rgba(217,139,139,0.18);
-  /* Linhas de papel sutis */
+  box-shadow: 0 8px 36px rgba(217, 139, 139, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.85);
   background-image: repeating-linear-gradient(
     transparent, transparent 27px,
-    rgba(217,139,139,0.07) 27px, rgba(217,139,139,0.07) 28px
+    rgba(217, 139, 139, 0.08) 27px, rgba(217, 139, 139, 0.08) 28px
   );
 }
 
 .mlc-deco-top {
   text-align: center;
-  color: var(--blush-light);
+  color: var(--blush);
   font-size: 1.1rem;
   margin-bottom: 1rem;
   letter-spacing: 0.5em;
@@ -571,8 +558,6 @@ html, body {
   font-size: 1rem;
   line-height: 1.85;
   color: var(--ink);
-  min-height: 4em;
-  /* Reserva de espaço visual para texto */
 }
 
 .mlc-signature {
@@ -582,19 +567,18 @@ html, body {
   color: var(--blush-dark);
   text-align: right;
   margin-top: 1.25rem;
-  min-height: 1.5em;
 }
 
 .s3-hint {
   font-family: var(--sans);
   font-size: 0.72rem;
   letter-spacing: 0.1em;
-  color: var(--ink-soft);
+  color: var(--ink);
   text-align: center;
+  text-shadow: 0 1px 6px rgba(255, 255, 255, 0.9);
   animation: hintPulse 2.8s ease-in-out infinite;
 }
 
-/* ── MINI ENVELOPES FLUTUANTES ── */
 .mini-env {
   position: fixed;
   left: var(--float-x);
@@ -607,7 +591,6 @@ html, body {
   touch-action: manipulation;
   outline: none;
   animation: miniFloat var(--float-dur, 6s) ease-in-out var(--float-delay, 0s) infinite;
-  /* Ocultos por padrão; JS os mostra quando Estado 3 ativo */
   display: none;
 }
 
@@ -616,7 +599,7 @@ html, body {
 .mini-env-body {
   display: block;
   font-size: 2.2rem;
-  filter: drop-shadow(0 3px 8px rgba(0,0,0,0.15));
+  filter: drop-shadow(0 3px 8px rgba(0,0,0,0.25));
   transition: transform 0.25s ease;
 }
 
@@ -625,7 +608,6 @@ html, body {
   transform: scale(1.18) rotate(-6deg);
 }
 
-/* Pontinho de notificação */
 .mini-env-dot {
   position: absolute;
   top: 1px; right: 2px;
@@ -644,9 +626,6 @@ html, body {
   100% { transform: translateY(0px) rotate(-3deg); }
 }
 
-/* ════════════════════════════════════════════
-   MODAIS DAS CARTINHAS
-   ════════════════════════════════════════════ */
 .modal {
   position: fixed;
   inset: 0;
@@ -671,20 +650,21 @@ html, body {
 .modal-box {
   position: relative;
   z-index: 1;
-  background: #fffdf8;
+  background: rgba(255, 253, 250, 0.94);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   border-radius: var(--radius-lg);
-  padding: 2rem 1.5rem 1.75rem;
+  padding: 2.25rem 1.6rem 2rem;
   width: 100%;
   max-width: 380px;
   max-height: 85dvh;
   overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
-  border: 1px solid rgba(217,139,139,0.2);
+  box-shadow: 0 20px 60px rgba(168, 92, 92, 0.25);
+  border: 1px solid rgba(217,139,139,0.25);
   animation: modalPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-  /* Linhas de papel */
   background-image: repeating-linear-gradient(
     transparent, transparent 27px,
-    rgba(217,139,139,0.07) 27px, rgba(217,139,139,0.07) 28px
+    rgba(217, 139, 139, 0.07) 27px, rgba(217, 139, 139, 0.07) 28px
   );
 }
 
@@ -728,55 +708,8 @@ html, body {
   line-height: 1.8;
   color: var(--ink);
   text-align: center;
-  min-height: 3em;
-  margin-bottom: 1.25rem;
 }
 
-/* Player de áudio da carta */
-.modal-audio-wrap {
-  display: flex;
-  justify-content: center;
-  margin-top: 0.5rem;
-}
-
-.btn-audio-play {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--sans);
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 0.65rem 1.4rem;
-  border-radius: 999px;
-  border: 1.5px solid var(--blush);
-  background: transparent;
-  color: var(--blush-dark);
-  cursor: pointer;
-  transition: var(--trans);
-  min-height: 44px;
-  touch-action: manipulation;
-}
-
-.btn-audio-play:hover,
-.btn-audio-play:focus-visible {
-  background: var(--blush);
-  color: #fff;
-  box-shadow: 0 4px 16px rgba(217,139,139,0.35);
-  outline: none;
-}
-
-.btn-audio-play.playing {
-  background: var(--blush-dark);
-  color: #fff;
-  border-color: var(--blush-dark);
-}
-
-.audio-play-icon {
-  font-size: 0.75rem;
-  transition: var(--trans);
-}
-
-/* ── BOTÃO DE MÚSICA PRINCIPAL (Estado 3) ── */
 .music-toggle {
   position: fixed;
   top: 1rem; right: 1rem;
@@ -797,33 +730,23 @@ html, body {
 }
 
 .music-toggle:hover { background: var(--blush); color: #fff; }
-
 .music-toggle[hidden] { display: none; }
-
 .music-icon { transition: var(--trans); }
 .music-toggle.paused .music-icon { opacity: 0.45; }
 
-/* ════════════════════════════════════════════
-   UTILITÁRIOS & ACESSIBILIDADE
-   ════════════════════════════════════════════ */
 button:focus-visible {
   outline: 2px solid var(--blush);
   outline-offset: 3px;
 }
 
-/* Screen reader only */
 .sr-only {
   position: absolute; width: 1px; height: 1px;
   padding: 0; margin: -1px; overflow: hidden;
   clip: rect(0,0,0,0); white-space: nowrap; border: 0;
 }
 
-/* Scrollbar discreta */
 * { scrollbar-width: thin; scrollbar-color: var(--blush-light) transparent; }
 
-/* ════════════════════════════════════════════
-   RESPONSIVE (tablet/desktop)
-   ════════════════════════════════════════════ */
 @media (min-width: 480px) {
   .envelope-scene { width: min(320px, 88vw); }
   .slide-img { max-height: 55dvh; }

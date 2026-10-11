@@ -1,5 +1,6 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -7,45 +8,25 @@
   <title>Para Voce — Uma Carta em Tres Atos</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,600&family=Quicksand:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body data-state="1">
 
-  <!-- ══════════════════════════════════════════════ -->
-  <!-- CANVAS: Particulas animadas (corações/pétalas) -->
-  <!-- ══════════════════════════════════════════════ -->
+  <div class="bg-wallpaper" aria-hidden="true"></div>
+
   <canvas id="particle-canvas" aria-hidden="true"></canvas>
 
-  <!-- ══════════════════════════════════════════════ -->
-  <!-- AUDIO PRINCIPAL (Estado 3)                     -->
-  <!-- Coloque seu arquivo em: audio/musica_principal.mp3 -->
-  <!-- ══════════════════════════════════════════════ -->
-  <audio id="bgMusic" src="audio/musica_principal.mp3" loop preload="none"></audio>
+  <audio id="bgMusic" src="audio/musica_principal.mp3" loop preload="auto"></audio>
 
-  <!-- ══════════════════════════════════════════════ -->
-  <!-- BOTÃO DE PLAY/PAUSE (Estado 3)                 -->
-  <!-- ══════════════════════════════════════════════ -->
-  <button
-    id="music-toggle"
-    class="music-toggle"
-    aria-label="Controlar musica"
-    aria-pressed="false"
-    hidden
-  >
+  <button id="music-toggle" class="music-toggle" aria-label="Controlar musica" aria-pressed="false" hidden>
     <span class="music-icon">♪</span>
   </button>
 
-  <!-- ══════════════════════════════════════════════ -->
-  <!--                                                -->
-  <!--   ESTADO 1 — A CARTA INICIAL                  -->
-  <!--   Fundo floral suave, envelope central          -->
-  <!--                                                -->
-  <!-- ══════════════════════════════════════════════ -->
   <section id="state-1" class="state state--active" role="main" aria-label="A carta inicial">
-
-    <!-- Decorações florais de fundo -->
     <div class="floral-bg" aria-hidden="true">
       <span class="floral-el f1">🌸</span>
       <span class="floral-el f2">🌿</span>
@@ -58,65 +39,35 @@
     </div>
 
     <div class="s1-center">
+      <p class="s1-subtitle"></p>
 
-      <!-- Título acima do envelope -->
-      <p class="s1-subtitle">
-        <!-- COLE AQUI O SUBTITULO / PEQUENA FRASE DE ABERTURA (ex: "Para você, com amor") -->
-      </p>
-
-      <!-- ENVELOPE ANIMADO -->
       <div class="envelope-scene" id="envelope-scene" role="button" tabindex="0" aria-label="Abrir carta">
-
-        <!-- Sombra projetada -->
         <div class="env-shadow" aria-hidden="true"></div>
-
-        <!-- Corpo do envelope -->
         <div class="env-wrap" id="env-wrap" aria-hidden="true">
-          <!-- Aba traseira (fundo) -->
           <div class="env-back"></div>
-          <!-- Aba lateral esquerda -->
           <div class="env-side env-side--left"></div>
-          <!-- Aba lateral direita -->
           <div class="env-side env-side--right"></div>
-          <!-- Aba inferior (corpo frontal) -->
           <div class="env-front"></div>
-          <!-- Aba superior (flap - abre) -->
           <div class="env-flap" id="env-flap"></div>
-          <!-- Interior (papel saindo) -->
           <div class="env-paper" id="env-paper" aria-hidden="true">
             <span class="env-paper-icon">🌸</span>
           </div>
-          <!-- Selo / coração central -->
           <div class="env-seal" aria-hidden="true">
             <span class="env-seal-icon">💌</span>
           </div>
-          <!-- Florzinha decorativa no canto -->
           <div class="env-flower" aria-hidden="true">🌸</div>
         </div>
 
-        <!-- Botão de abertura -->
         <button class="btn-open-env" id="btn-open-env" tabindex="-1" aria-hidden="true">
           Abrir ✉️
         </button>
+      </div>
 
-      </div><!-- /.envelope-scene -->
-
-      <!-- Indicação de toque (mobile) -->
-      <p class="s1-hint" aria-hidden="true">toque para abrir</p>
-
-    </div><!-- /.s1-center -->
+      <p class="s1-hint" aria-hidden="true"></p>
+    </div>
   </section>
 
-
-  <!-- ══════════════════════════════════════════════ -->
-  <!--                                                -->
-  <!--   ESTADO 2 — A JORNADA EM MANGÁ               -->
-  <!--   Fundo escuro, slideshow sequencial das fotos  -->
-  <!--                                                -->
-  <!-- ══════════════════════════════════════════════ -->
   <section id="state-2" class="state" aria-label="A jornada em manga" hidden>
-
-    <!-- Indicador de progresso -->
     <nav class="slide-progress" aria-label="Progresso da historia">
       <span class="progress-dot active" data-slide="0" aria-label="Foto 1"></span>
       <span class="progress-dot" data-slide="1" aria-label="Foto 2"></span>
@@ -124,103 +75,64 @@
       <span class="progress-dot" data-slide="3" aria-label="Foto 4"></span>
     </nav>
 
-    <!-- SLIDES: um por vez, exibidos via JS -->
     <div class="slides-container" id="slides-container">
-
-      <!-- ── SLIDE 1 ── -->
       <article class="slide" data-index="0" aria-label="Capitulo 1">
         <div class="slide-image-frame">
-          <img
-            src="img/foto1.jpg"
-            alt="Foto 1"
-            class="slide-img"
-            loading="eager"
-          />
-          <!-- Barra de titulo no topo da imagem -->
+          <img src="img/foto1.jpg" alt="Foto 1" class="slide-img" loading="eager" />
           <div class="slide-chapter" aria-hidden="true">Capítulo I</div>
         </div>
         <div class="slide-content">
           <div class="story-text" id="story-text-1">
-            <!-- COLE AQUI O TEXTO DA FOTO 1 -->
+            <p>Texto</p>
           </div>
           <button class="btn-advance" data-next="1">Avançar ➔</button>
         </div>
       </article>
 
-      <!-- ── SLIDE 2 ── -->
       <article class="slide" data-index="1" aria-label="Capitulo 2" hidden>
         <div class="slide-image-frame">
-          <img
-            src="img/foto2.jpg"
-            alt="Foto 2"
-            class="slide-img"
-            loading="lazy"
-          />
+          <img src="img/foto2.jpg" alt="Foto 2" class="slide-img" loading="lazy" />
           <div class="slide-chapter" aria-hidden="true">Capítulo II</div>
         </div>
         <div class="slide-content">
           <div class="story-text" id="story-text-2">
-            <!-- COLE AQUI O TEXTO DA FOTO 2 -->
+            <p>Texto</p>
           </div>
           <button class="btn-advance" data-next="2">Avançar ➔</button>
         </div>
       </article>
 
-      <!-- ── SLIDE 3 ── -->
       <article class="slide" data-index="2" aria-label="Capitulo 3" hidden>
         <div class="slide-image-frame">
-          <img
-            src="img/foto3.jpg"
-            alt="Foto 3"
-            class="slide-img"
-            loading="lazy"
-          />
+          <img src="img/foto3.jpg" alt="Foto 3" class="slide-img" loading="lazy" />
           <div class="slide-chapter" aria-hidden="true">Capítulo III</div>
         </div>
         <div class="slide-content">
           <div class="story-text" id="story-text-3">
-            <!-- COLE AQUI O TEXTO DA FOTO 3 -->
+            <p>Texto</p>
           </div>
           <button class="btn-advance" data-next="3">Avançar ➔</button>
         </div>
       </article>
 
-      <!-- ── SLIDE 4 ── -->
       <article class="slide" data-index="3" aria-label="Capitulo 4" hidden>
         <div class="slide-image-frame">
-          <img
-            src="img/foto4.jpg"
-            alt="Foto 4"
-            class="slide-img"
-            loading="lazy"
-          />
+          <img src="img/foto4.jpg" alt="Foto 4" class="slide-img" loading="lazy" />
           <div class="slide-chapter" aria-hidden="true">Capítulo IV</div>
         </div>
         <div class="slide-content">
           <div class="story-text" id="story-text-4">
-            <!-- COLE AQUI O TEXTO DA FOTO 4 -->
+            <p>Texto</p>
           </div>
-          <!-- Ultimo slide vai para Estado 3 -->
           <button class="btn-advance btn-advance--final" data-next="final">
             Concluir 🌸
           </button>
         </div>
       </article>
-
-    </div><!-- /.slides-container -->
+    </div>
   </section>
 
-
-  <!-- ══════════════════════════════════════════════ -->
-  <!--                                                -->
-  <!--   ESTADO 3 — O DESTINO FINAL                  -->
-  <!--   Floral, musica de fundo, carta principal     -->
-  <!--   e mini-envelopes flutuantes com modais       -->
-  <!--                                                -->
-  <!-- ══════════════════════════════════════════════ -->
   <section id="state-3" class="state" aria-label="O destino final" hidden>
-
-    <!-- Decorações florais de fundo -->
     <div class="floral-bg floral-bg--s3" aria-hidden="true">
       <span class="floral-el f1">🌸</span>
       <span class="floral-el f2">🌿</span>
@@ -233,236 +145,134 @@
     </div>
 
     <div class="s3-inner">
-
-      <!-- Ornamento do título -->
       <div class="s3-ornament" aria-hidden="true">— 🌸 —</div>
-
       <h1 class="s3-title">
-        <!-- COLE AQUI O TITULO PRINCIPAL DO ESTADO 3 -->
+        <p>Texto</p>
       </h1>
 
-      <!-- CARD PRINCIPAL DA DECLARAÇÃO -->
       <div class="main-letter-card">
         <div class="mlc-deco-top" aria-hidden="true">✦</div>
         <div class="main-letter-content">
-          <!-- COLE AQUI SEU TEXTO PRINCIPAL / DECLARACAO COMPLETA -->
+          <p>Texto</p>
         </div>
         <div class="mlc-signature">
-          <!-- COLE AQUI A ASSINATURA FINAL (ex: "Com todo o meu amor ❤️") -->
+          <p>Texto</p>
         </div>
-      </div><!-- /.main-letter-card -->
+      </div>
 
-      <!-- Indicação das cartinhas flutuantes -->
-      <p class="s3-hint" aria-hidden="true">toque nas cartinhas para abrir 🌸</p>
+      <p class="s3-hint" aria-hidden="true"></p>
+    </div>
 
-    </div><!-- /.s3-inner -->
-
-    <!-- ── MINI ENVELOPES FLUTUANTES ── -->
-    <!-- Cada mini envelope abre um modal diferente -->
-
-    <!-- Carta 1 -->
-    <button
-      class="mini-env"
-      id="mini-env-1"
-      aria-label="Abrir cartinha 1"
-      data-modal="modal-1"
-      style="--float-x:12%; --float-y:15%; --float-delay:0s; --float-dur:5.5s"
-    >
+    <button class="mini-env" id="mini-env-1" aria-label="Abrir cartinha 1" data-modal="modal-1"
+      style="--float-x:12%; --float-y:15%; --float-delay:0s; --float-dur:5.5s">
       <span class="mini-env-body">✉️</span>
       <span class="mini-env-dot" aria-hidden="true"></span>
     </button>
 
-    <!-- Carta 2 -->
-    <button
-      class="mini-env"
-      id="mini-env-2"
-      aria-label="Abrir cartinha 2"
-      data-modal="modal-2"
-      style="--float-x:78%; --float-y:20%; --float-delay:1.2s; --float-dur:6.2s"
-    >
+    <button class="mini-env" id="mini-env-2" aria-label="Abrir cartinha 2" data-modal="modal-2"
+      style="--float-x:78%; --float-y:20%; --float-delay:1.2s; --float-dur:6.2s">
       <span class="mini-env-body">✉️</span>
       <span class="mini-env-dot" aria-hidden="true"></span>
     </button>
 
-    <!-- Carta 3 -->
-    <button
-      class="mini-env"
-      id="mini-env-3"
-      aria-label="Abrir cartinha 3"
-      data-modal="modal-3"
-      style="--float-x:8%; --float-y:68%; --float-delay:0.7s; --float-dur:7s"
-    >
+    <button class="mini-env" id="mini-env-3" aria-label="Abrir cartinha 3" data-modal="modal-3"
+      style="--float-x:8%; --float-y:68%; --float-delay:0.7s; --float-dur:7s">
       <span class="mini-env-body">✉️</span>
       <span class="mini-env-dot" aria-hidden="true"></span>
     </button>
 
-    <!-- Carta 4 -->
-    <button
-      class="mini-env"
-      id="mini-env-4"
-      aria-label="Abrir cartinha 4"
-      data-modal="modal-4"
-      style="--float-x:80%; --float-y:72%; --float-delay:2s; --float-dur:5.8s"
-    >
+    <button class="mini-env" id="mini-env-4" aria-label="Abrir cartinha 4" data-modal="modal-4"
+      style="--float-x:80%; --float-y:72%; --float-delay:2s; --float-dur:5.8s">
       <span class="mini-env-body">✉️</span>
       <span class="mini-env-dot" aria-hidden="true"></span>
     </button>
 
-    <!-- Carta 5 -->
-    <button
-      class="mini-env"
-      id="mini-env-5"
-      aria-label="Abrir cartinha 5"
-      data-modal="modal-5"
-      style="--float-x:45%; --float-y:10%; --float-delay:1.5s; --float-dur:6.5s"
-    >
+    <button class="mini-env" id="mini-env-5" aria-label="Abrir cartinha 5" data-modal="modal-5"
+      style="--float-x:45%; --float-y:10%; --float-delay:1.5s; --float-dur:6.5s">
       <span class="mini-env-body">✉️</span>
       <span class="mini-env-dot" aria-hidden="true"></span>
     </button>
 
-    <!-- Carta 6 -->
-    <button
-      class="mini-env"
-      id="mini-env-6"
-      aria-label="Abrir cartinha 6"
-      data-modal="modal-6"
-      style="--float-x:55%; --float-y:85%; --float-delay:3s; --float-dur:6s"
-    >
+    <button class="mini-env" id="mini-env-6" aria-label="Abrir cartinha 6" data-modal="modal-6"
+      style="--float-x:55%; --float-y:85%; --float-delay:3s; --float-dur:6s">
       <span class="mini-env-body">✉️</span>
       <span class="mini-env-dot" aria-hidden="true"></span>
     </button>
+  </section>
 
-  </section><!-- /#state-3 -->
-
-
-  <!-- ══════════════════════════════════════════════ -->
-  <!--                                                -->
-  <!--   MODAIS DAS CARTINHAS FLUTUANTES             -->
-  <!--   (um por carta, fora do fluxo visual)         -->
-  <!--                                                -->
-  <!-- ══════════════════════════════════════════════ -->
-
-  <!-- ── MODAL 1 ── -->
   <div id="modal-1" class="modal" role="dialog" aria-modal="true" aria-label="Cartinha 1" hidden>
     <div class="modal-overlay"></div>
     <div class="modal-box">
       <button class="modal-close" aria-label="Fechar cartinha">✕</button>
       <div class="modal-deco" aria-hidden="true">🌸</div>
       <div class="popup-poem" id="poem-1">
-        <!-- COLE AQUI O POEMA / FRASE DA CARTA 1 -->
+        <p>Texto</p>
       </div>
-      <div class="modal-audio-wrap">
-        <!-- Audio dedicado desta carta -->
-        <!-- Coloque o arquivo em: audio/carta1.mp3 -->
-        <audio class="carta-audio" src="audio/carta1.mp3" preload="none"></audio>
-        <button class="btn-audio-play" aria-label="Tocar musica desta carta">
-          <span class="audio-play-icon">▶</span>
-          <span class="audio-play-label">Ouvir música</span>
-        </button>
-      </div>
+      <audio class="carta-audio" src="audio/carta1.mp3" preload="auto"></audio>
     </div>
   </div>
 
-  <!-- ── MODAL 2 ── -->
   <div id="modal-2" class="modal" role="dialog" aria-modal="true" aria-label="Cartinha 2" hidden>
     <div class="modal-overlay"></div>
     <div class="modal-box">
       <button class="modal-close" aria-label="Fechar cartinha">✕</button>
       <div class="modal-deco" aria-hidden="true">🌷</div>
       <div class="popup-poem" id="poem-2">
-        <!-- COLE AQUI O POEMA / FRASE DA CARTA 2 -->
+        <p>Texto</p>
       </div>
-      <div class="modal-audio-wrap">
-        <!-- Coloque o arquivo em: audio/carta2.mp3 -->
-        <audio class="carta-audio" src="audio/carta2.mp3" preload="none"></audio>
-        <button class="btn-audio-play" aria-label="Tocar musica desta carta">
-          <span class="audio-play-icon">▶</span>
-          <span class="audio-play-label">Ouvir música</span>
-        </button>
-      </div>
+      <audio class="carta-audio" src="audio/carta2.mp3" preload="auto"></audio>
     </div>
   </div>
 
-  <!-- ── MODAL 3 ── -->
   <div id="modal-3" class="modal" role="dialog" aria-modal="true" aria-label="Cartinha 3" hidden>
     <div class="modal-overlay"></div>
     <div class="modal-box">
       <button class="modal-close" aria-label="Fechar cartinha">✕</button>
       <div class="modal-deco" aria-hidden="true">🌺</div>
       <div class="popup-poem" id="poem-3">
-        <!-- COLE AQUI O POEMA / FRASE DA CARTA 3 -->
+        <p>Texto</p>
       </div>
-      <div class="modal-audio-wrap">
-        <!-- Coloque o arquivo em: audio/carta3.mp3 -->
-        <audio class="carta-audio" src="audio/carta3.mp3" preload="none"></audio>
-        <button class="btn-audio-play" aria-label="Tocar musica desta carta">
-          <span class="audio-play-icon">▶</span>
-          <span class="audio-play-label">Ouvir música</span>
-        </button>
-      </div>
+      <audio class="carta-audio" src="audio/carta3.mp3" preload="auto"></audio>
     </div>
   </div>
 
-  <!-- ── MODAL 4 ── -->
   <div id="modal-4" class="modal" role="dialog" aria-modal="true" aria-label="Cartinha 4" hidden>
     <div class="modal-overlay"></div>
     <div class="modal-box">
       <button class="modal-close" aria-label="Fechar cartinha">✕</button>
       <div class="modal-deco" aria-hidden="true">🌿</div>
       <div class="popup-poem" id="poem-4">
-        <!-- COLE AQUI O POEMA / FRASE DA CARTA 4 -->
+        <p>Texto</p>
       </div>
-      <div class="modal-audio-wrap">
-        <!-- Coloque o arquivo em: audio/carta4.mp3 -->
-        <audio class="carta-audio" src="audio/carta4.mp3" preload="none"></audio>
-        <button class="btn-audio-play" aria-label="Tocar musica desta carta">
-          <span class="audio-play-icon">▶</span>
-          <span class="audio-play-label">Ouvir música</span>
-        </button>
-      </div>
+      <audio class="carta-audio" src="audio/carta4.mp3" preload="auto"></audio>
     </div>
   </div>
 
-  <!-- ── MODAL 5 ── -->
   <div id="modal-5" class="modal" role="dialog" aria-modal="true" aria-label="Cartinha 5" hidden>
     <div class="modal-overlay"></div>
     <div class="modal-box">
       <button class="modal-close" aria-label="Fechar cartinha">✕</button>
       <div class="modal-deco" aria-hidden="true">🌸</div>
       <div class="popup-poem" id="poem-5">
-        <!-- COLE AQUI O POEMA / FRASE DA CARTA 5 -->
+        <p>Texto</p>
       </div>
-      <div class="modal-audio-wrap">
-        <!-- Coloque o arquivo em: audio/carta5.mp3 -->
-        <audio class="carta-audio" src="audio/carta5.mp3" preload="none"></audio>
-        <button class="btn-audio-play" aria-label="Tocar musica desta carta">
-          <span class="audio-play-icon">▶</span>
-          <span class="audio-play-label">Ouvir música</span>
-        </button>
-      </div>
+      <audio class="carta-audio" src="audio/carta5.mp3" preload="auto"></audio>
     </div>
   </div>
 
-  <!-- ── MODAL 6 ── -->
   <div id="modal-6" class="modal" role="dialog" aria-modal="true" aria-label="Cartinha 6" hidden>
     <div class="modal-overlay"></div>
     <div class="modal-box">
       <button class="modal-close" aria-label="Fechar cartinha">✕</button>
       <div class="modal-deco" aria-hidden="true">💗</div>
       <div class="popup-poem" id="poem-6">
-        <!-- COLE AQUI O POEMA / FRASE DA CARTA 6 -->
+        <p>Texto</p>
       </div>
-      <div class="modal-audio-wrap">
-        <!-- Coloque o arquivo em: audio/carta6.mp3 -->
-        <audio class="carta-audio" src="audio/carta6.mp3" preload="none"></audio>
-        <button class="btn-audio-play" aria-label="Tocar musica desta carta">
-          <span class="audio-play-icon">▶</span>
-          <span class="audio-play-label">Ouvir música</span>
-        </button>
-      </div>
+      <audio class="carta-audio" src="audio/carta6.mp3" preload="auto"></audio>
     </div>
   </div>
 
   <script src="script.js"></script>
 </body>
+
 </html>
